@@ -34,7 +34,8 @@
 ;;; Code:
 
 (defvar pretty-pages-file-extention "org"
-  "The file extention you want your webpage to have. (e.g. org, md, html)")
+  "The file extention you want your webpage to have. (e.g. org, md, html)
+Make sure you assign to this variable the file extention and not the name of the format.")
 
 (defvar pretty-pages-root nil
   "The directory where pretty webpages are to be created")
