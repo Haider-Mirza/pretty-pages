@@ -4,7 +4,7 @@
 
 ;; Author: Haider Mirza <paralle1epiped@outlook.com>
 ;; Keywords: lisp webpage
-;; Version: 0.0.1
+;; Version: 1.0.0
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -40,22 +40,37 @@ Make sure you assign to this variable the file extention and not the name of the
 (defvar pretty-pages-root nil
   "The directory where pretty webpages are to be created")
 
-;; (setq pretty-pages-root "~/test")
-
-;; TODO: Add a list with subdirectories user defines
-(defun pretty-pages-create-webpage ()
-  "Create a pretty webpage"
-  (interactive)
+(defun pretty-pages-webpage-in-subdirectory (name directory)
+  "Create a pretty webpage in a subdirectory listed in the variable 'pretty-pages-subdirectories'"
+  (interactive (list (read-string "Name for webpage: ")
+		     (read-directory-name "What directory? " 
+					  (when (not (string-suffix-p "/" pretty-pages-root))
+					    (concat pretty-pages-root "/")))))
   (if (= (length pretty-pages-root) 0)
-      (message "Please set the variable (pretty-pages-root)")
-    (let* ((name (read-string "Name for webpage: " ))
-	   (directory
+      (user-error "Please set the variable (pretty-pages-root)")
+    (let ((file (concat directory name "/" "index." pretty-pages-file-extention)))
+      (when (not (file-directory-p directory))
+	(if (yes-or-no-p (concat "The directory '" directory "' doesn't exist. Create? "))
+	    (progn
+	      (make-directory directory)
+	      (message (concat "Created New directory" directory)))
+	  (user-error (concat "Directory '" directory "' doesn't exist"))))
+      (make-directory (concat directory name "/"))
+      (make-empty-file file)
+      (find-file file))))
+
+(defun pretty-pages-webpage (name)
+  "Create a pretty webpage"
+  (interactive "MName for webpage: ")
+  (if (= (length pretty-pages-root) 0)
+      (user-error "Please set the variable (pretty-pages-root)")
+    (let* ((directory
 	    (if (string-suffix-p "/" pretty-pages-root)
 		(concat pretty-pages-root name "/")
 	      (concat pretty-pages-root "/" name "/")))
 	   (file (concat directory "index." pretty-pages-file-extention)))
       (if (file-directory-p directory)
-	  (message (concat "There is already a directory in '" pretty-pages-root "' with that name"))
+	  (user-error (concat "There is already a directory in '" pretty-pages-root "' with that name"))
 	(make-directory directory)
 	(make-empty-file file)
 	(find-file file)))))
