@@ -72,7 +72,7 @@ Make sure you assign to this variable the file extention and not the name of the
 		 (concat pretty-pages-root "/" (s-replace "-" "/" selected-file) "/" "index.org")))))
 
 
-(defun pretty-pages-webpage-in-subdirectory (name directory)
+(defun pretty-pages-open-in-subdirectory (name directory)
   "Create a pretty webpage in a subdirectory listed in the variable 'pretty-pages-subdirectories'"
   (interactive (list (read-string "Name for webpage: ")
 		     (read-directory-name "What directory? " 
@@ -91,7 +91,7 @@ Make sure you assign to this variable the file extention and not the name of the
     (make-empty-file file)
     (find-file file)))
 
-(defun pretty-pages-webpage (name)
+(defun pretty-pages-open (name)
   "Create a pretty webpage"
   (interactive "MName for webpage: ")
   (if (= (length pretty-pages-root) 0)
