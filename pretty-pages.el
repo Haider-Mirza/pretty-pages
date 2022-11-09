@@ -41,8 +41,8 @@ Make sure you assign to this variable the file extention and not the name of the
   "The directory where pretty webpages are to be created")
 
 ;; TODO: Remove reliance of find command
-(defun pretty-pages-search ()
-  "Searches through all created webpages and opens it"
+(defun pretty-pages-open ()
+  "Opens a webpage"
   (interactive)
   (when (= (length pretty-pages-root) 0)
     (user-error "Please set the variable 'pretty-pages-root'"))
