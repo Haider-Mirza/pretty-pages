@@ -40,8 +40,6 @@ Make sure you assign to this variable the file extention and not the name of the
 (defvar pretty-pages-root nil
   "The directory where pretty webpages are to be created")
 
-;; (setq pretty-pages-root "~/test")
-
 ;; TODO: Remove reliance of find command
 (defun pretty-pages-search ()
   "Searches through all created webpages and opens it"
@@ -61,11 +59,14 @@ Make sure you assign to this variable the file extention and not the name of the
 	      (s-replace "/" "-"
 			 (s-replace "/index.org" ""
 				    (s-replace
-				     (concat (expand-file-name pretty-pages-root) "/") "" index-files)))
+				     (if (string-suffix-p "/" pretty-pages-root)
+					 (expand-file-name pretty-pages-root)
+				       (concat (expand-file-name pretty-pages-root) "/")) "" index-files)))
 	    (mapcar #'iterate l)))
 	 (selected-file
 	  (completing-read "Select a page: " (split-string simplified-files "\n"))))
 
+    (message index-files)
     (find-file (if (string-suffix-p "/" pretty-pages-root)
 		   (concat pretty-pages-root (s-replace "-" "/" selected-file) "/" "index.org")
 		 (concat pretty-pages-root "/" (s-replace "-" "/" selected-file) "/" "index.org")))))

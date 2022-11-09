@@ -5,6 +5,8 @@
 Pretty-pages is a Emacs Package that helps you create your webpages in a format that makes your URL pretty.
 It makes every webpage you create into the form of *foo/index.html* so you can remove the .html in your website.
 
+** Documentation
+
 ** Example
 https://parallelepiped.srht.site/projects/
 You can see that there is no *.html* extention.
