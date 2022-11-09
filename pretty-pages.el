@@ -4,7 +4,7 @@
 
 ;; Author: Haider Mirza <paralle1epiped@outlook.com>
 ;; Keywords: lisp webpage
-;; Version: 1.0.0
+;; Version: 1.1.0
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -40,24 +40,55 @@ Make sure you assign to this variable the file extention and not the name of the
 (defvar pretty-pages-root nil
   "The directory where pretty webpages are to be created")
 
+;; (setq pretty-pages-root "~/test")
+
+;; TODO: Remove reliance of find command
+(defun pretty-pages-search ()
+  "Searches through all created webpages and opens it"
+  (interactive)
+  (when (= (length pretty-pages-root) 0)
+    (user-error "Please set the variable 'pretty-pages-root'"))
+  (when (not (executable-find "find"))
+    (user-error "Make sure the command 'find' is installed"))
+  (when (not (executable-find "grep"))
+    (user-error "Make sure the command 'grep' is installed"))
+  (let* ((index-files
+	  (replace-regexp-in-string "\n$" ""
+				    (shell-command-to-string
+				     (concat "find " (expand-file-name pretty-pages-root) " -type f | grep index.org"))))
+	 (simplified-files
+	  (if (atom index-files)
+	      (s-replace "/" "-"
+			 (s-replace "/index.org" ""
+				    (s-replace
+				     (concat (expand-file-name pretty-pages-root) "/") "" index-files)))
+	    (mapcar #'iterate l)))
+	 (selected-file
+	  (completing-read "Select a page: " (split-string simplified-files "\n"))))
+
+    (find-file (if (string-suffix-p "/" pretty-pages-root)
+		   (concat pretty-pages-root (s-replace "-" "/" selected-file) "/" "index.org")
+		 (concat pretty-pages-root "/" (s-replace "-" "/" selected-file) "/" "index.org")))))
+
+
 (defun pretty-pages-webpage-in-subdirectory (name directory)
   "Create a pretty webpage in a subdirectory listed in the variable 'pretty-pages-subdirectories'"
   (interactive (list (read-string "Name for webpage: ")
 		     (read-directory-name "What directory? " 
 					  (when (not (string-suffix-p "/" pretty-pages-root))
 					    (concat pretty-pages-root "/")))))
-  (if (= (length pretty-pages-root) 0)
-      (user-error "Please set the variable (pretty-pages-root)")
-    (let ((file (concat directory name "/" "index." pretty-pages-file-extention)))
-      (when (not (file-directory-p directory))
-	(if (yes-or-no-p (concat "The directory '" directory "' doesn't exist. Create? "))
-	    (progn
-	      (make-directory directory)
-	      (message (concat "Created New directory" directory)))
-	  (user-error (concat "Directory '" directory "' doesn't exist"))))
-      (make-directory (concat directory name "/"))
-      (make-empty-file file)
-      (find-file file))))
+  (when (= (length pretty-pages-root) 0)
+    (user-error "Please set the variable (pretty-pages-root)"))
+  (let ((file (concat directory name "/" "index." pretty-pages-file-extention)))
+    (when (not (file-directory-p directory))
+      (if (yes-or-no-p (concat "The directory '" directory "' doesn't exist. Create? "))
+	  (progn
+	    (make-directory directory)
+	    (message (concat "Created New directory" directory)))
+	(user-error (concat "Directory '" directory "' doesn't exist"))))
+    (make-directory (concat directory name "/"))
+    (make-empty-file file)
+    (find-file file)))
 
 (defun pretty-pages-webpage (name)
   "Create a pretty webpage"
