@@ -66,7 +66,6 @@ Make sure you assign to this variable the file extention and not the name of the
 	 (selected-file
 	  (completing-read "Select a page: " (split-string simplified-files "\n"))))
 
-    (message index-files)
     (find-file (if (string-suffix-p "/" pretty-pages-root)
 		   (concat pretty-pages-root (s-replace "-" "/" selected-file) "/" "index.org")
 		 (concat pretty-pages-root "/" (s-replace "-" "/" selected-file) "/" "index.org")))))
