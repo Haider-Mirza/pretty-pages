@@ -40,7 +40,7 @@ Make sure you assign to this variable the file extention and not the name of the
 (defvar pretty-pages-root nil
   "The directory where pretty webpages are to be created")
 
-;; TODO: Remove reliance of find command
+;; TODO: Remove the reliance of the find command
 (defun pretty-pages-open ()
   "Opens a webpage"
   (interactive)
